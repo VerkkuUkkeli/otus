@@ -1,5 +1,17 @@
+UNAME := $(shell uname)
+
 headers = helpers.hpp Camera.hpp ODE.hpp
 sources = main.cpp helpers.cpp Camera.cpp callbacks.cpp ODE.cpp
 
+CPPFLAGS = -std=c++11 -Wno-deprecated -lm
+
+ifeq ($(UNAME), Darwin)
+	CPPFLAGS += -framework GLUT -framework OpenGL -lGLEW
+endif
+
+ifeq ($(UNAME), Linux)
+	CPPFLAGS += -lglut -lGLEW -lGL -lGLU 
+endif
+
 all:
-	g++ -std=c++11 -Wno-deprecated $(sources) $(headers) -framework GLUT -framework OpenGL -lGLEW -lglui -lm
+	g++ $(sources) $(headers) $(CPPFLAGS)

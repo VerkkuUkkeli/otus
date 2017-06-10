@@ -1,8 +1,17 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
-#include "helpers.hpp"
+
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
+#endif
+
+#ifdef __gnu_linux__
+#include <GL/gl.h>
+#include <GL/glu.h>
+#endif
+
+#include "helpers.hpp"
 #include <glm/glm.hpp>
 
 class Camera
