@@ -6,7 +6,7 @@ sources = main.cpp helpers.cpp Camera.cpp callbacks.cpp ODE.cpp
 CPPFLAGS = -std=c++11 -Wno-deprecated -lm
 
 ifeq ($(UNAME), Darwin)
-	CPPFLAGS += -framework GLUT -framework OpenGL -lGLEW
+	CPPFLAGS += -I /usr/local/include -framework GLUT -framework OpenGL -lGLEW
 endif
 
 ifeq ($(UNAME), Linux)
