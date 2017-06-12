@@ -7,7 +7,7 @@ Camera::Camera()
     loc     = glm::vec4(3.0, 3.0, 3.0, 0.0);
     focus   = glm::vec4(0.0, 0.0, 0.0, 0.0);
     up      = glm::vec4(-1.0, -1.0, 1.0, 0.0);
-    dir     = glm::normalize(focus - loc);
+    dir     = focus - loc;
     far     = 250.0;
     near    = 0.1;
     mode    = CAM_ORBIT;
@@ -47,28 +47,29 @@ void Camera::rot_mouse(int x, int y)
     dir = glm::normalize(focus - loc);
 
     // find displacement from point where mouse was pressed
-    int dx = x - oldMouseX;
-    int dy = y - oldMouseY;
+    float dx = x - oldMouseX;
+    float dy = y - oldMouseY;
 
     float xrad = -5e-3 * dx;
     float yrad = -5e-3 * dy;
 
     // GLUT_LEFT_BUTTON = 0
     // GLUT_RIGHT_BUTTON = 2
+    // shift + left = 3
     if (mb == 0) 
     {
         // vertical rotation
-        glm::vec3 w = glm::normalize(glm::vec3(loc.x, loc.y, loc.z));
-        glm::vec3 v = glm::normalize(glm::vec3(up.x, up.y, up.z));
+        glm::vec3 w = glm::normalize(glm::vec3(loc-focus));
+        glm::vec3 v = glm::normalize(glm::vec3(up));
         glm::vec3 u = glm::cross(v, w);
-        glm::mat4 R_v = rotate(glm::vec3(u.x, u.y, u.z), yrad);
+        glm::mat4 R_v = rotate(u, yrad);
 
         // horizontal rotation
         glm::mat4 R_h = rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
 
         // compose two rotations and rotate location and up vectors
         glm::mat4 R = R_h*R_v;
-        loc = R*loc;
+        loc = focus + R*(loc-focus);
         up = R*up;
     }
     else if (mb == 2)
@@ -79,12 +80,26 @@ void Camera::rot_mouse(int x, int y)
 
         if (dy > 0)
         {
-            loc *= (1-zoomfactor);
+            loc += -(loc-focus)*zoomfactor;
         }
         if (dy < 0)
         {
-            loc *= (1+zoomfactor);
+            loc += (loc-focus)*zoomfactor;
         }
+    }
+    else if (mb == 3)
+    {
+        // figure out unit vectors towards right and up
+        glm::vec3 up3 = glm::normalize(glm::vec3(up));
+        glm::vec3 right = glm::normalize(glm::cross(glm::vec3(focus-loc), up3));
+
+        dx *= -0.01;
+        dy *= 0.01;
+        
+        // scale right and up vectors by mouse displacement in proper direction
+        glm::vec3 T3 = dx*right + dy*up3;
+        focus += glm::vec4(T3, 0.0);
+        loc += glm::vec4(T3, 0.0);
     }
 
     update();
@@ -110,12 +125,18 @@ void Camera::rot_fps(int x, int y)
     glm::mat4 R = R_h*R_v;
     dir = R*dir;
     up = R*up;
-    
+
     update();
 }
 
 void Camera::update()
 {      
+    // calculate new focus before (for FPS movement only)
+    if (mode == CAM_FPS)
+    {
+        focus = loc + dir;
+    }
+
     // reload projection and modelview matrices after changes in
     // camera positioning
     glMatrixMode(GL_PROJECTION);
@@ -156,25 +177,24 @@ void Camera::storeScreenSize(int w, int h)
 
 void Camera::toggleMode()
 {
+    // set focus accordingly
+    focus = loc + dir;
+
     if (mode == CAM_ORBIT)
     {
         cout << "Camera mode: FPS" << endl;
         mode = CAM_FPS;
-
-        // set focus towards dir
-        focus = loc + dir;
     }
     else
     {
         cout << "Camera mode: Orbit" << endl;
         mode = CAM_ORBIT;
-        dir = glm::normalize(-loc);
 
-        // set focus to origin and make sure that up vector
-        // points upwards
-        focus = glm::vec4(0.0, 0.0, 0.0, 0.0);
+        focus = loc + dir;
+
+        // make sure that up vector points upwards
         glm::vec3 z = glm::vec3(0.0, 0.0, 1.0);
-        glm::vec3 w = glm::normalize(glm::vec3(loc.x, loc.y, loc.z));
+        glm::vec3 w = glm::normalize(glm::vec3(focus-loc));
         glm::vec3 u = glm::normalize(glm::cross(z, w));
 
         glm::vec3 up3 = glm::cross(w, u);
@@ -188,6 +208,7 @@ void Camera::toggleMode()
         }
     }
     update();
+    
 }
 
 int Camera::getMode()
@@ -197,7 +218,7 @@ int Camera::getMode()
 
 void Camera::mov_forward(float amount)
 {
-    loc += dir*amount*speed;
+    loc += glm::normalize(dir)*amount*speed;
     update();
 }
 
@@ -211,7 +232,7 @@ void Camera::mov_sideways(float amount)
 {
     // find sideways vector
     glm::vec3 z = glm::vec3(0.0, 0.0, 1.0);
-    glm::vec3 w = glm::vec3(loc.x, loc.y, loc.z);
+    glm::vec3 w = glm::vec3(loc-focus);
     glm::vec3 right3 = glm::normalize(glm::cross(z, w));
     glm::vec4 right4 = glm::vec4(right3.x, right3.y, right3.z, 0.0);
 

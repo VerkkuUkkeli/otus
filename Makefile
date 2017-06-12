@@ -1,7 +1,7 @@
 UNAME := $(shell uname)
 
-headers = helpers.hpp Camera.hpp ODE.hpp
-sources = main.cpp helpers.cpp Camera.cpp callbacks.cpp ODE.cpp
+headers = helpers.hpp Camera.hpp callbacks.hpp ODE.hpp display.hpp globals.hpp
+sources = main.cpp helpers.cpp Camera.cpp callbacks.cpp ODE.cpp display.cpp globals.cpp
 
 CPPFLAGS = -std=c++11 -Wno-deprecated -lm
 
