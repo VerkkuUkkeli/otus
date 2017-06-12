@@ -36,7 +36,7 @@ Camera cam{};
             case 'c':
                 cam.toggleMode();
                 // store mouse location for fps
-                cam.storeMouseLoc(x, y);
+                cam.storeMouseLoc(x, y, -1);
                 break;
             default:
                 break;
@@ -106,7 +106,11 @@ Camera cam{};
         {
             if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
             {
-                cam.storeMouseLoc(x, y);
+                cam.storeMouseLoc(x, y, GLUT_LEFT_BUTTON);
+            }
+            else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+            {
+                cam.storeMouseLoc(x,y, GLUT_RIGHT_BUTTON);
             }
         }
     }
@@ -117,7 +121,7 @@ Camera cam{};
         if (cam.getMode() == cam.CAM_ORBIT)
         {
             cam.rot_mouse(x, y);
-            cam.storeMouseLoc(x, y);
+            cam.storeMouseLoc(x, y, cam.getMouseButton());
             glutPostRedisplay();
         }
     }
@@ -128,7 +132,7 @@ Camera cam{};
         if (cam.getMode() == cam.CAM_FPS)
         {
             cam.rot_fps(x, y);
-            cam.storeMouseLoc(x, y);
+            cam.storeMouseLoc(x, y, -1);
             glutPostRedisplay();
         }
     }

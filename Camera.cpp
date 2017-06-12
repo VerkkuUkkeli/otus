@@ -12,6 +12,7 @@ Camera::Camera()
     near    = 0.1;
     mode    = CAM_ORBIT;
     speed   = 0.5;
+    mb      = -1;
 }
 
 void Camera::rot_h(float rad)
@@ -52,19 +53,39 @@ void Camera::rot_mouse(int x, int y)
     float xrad = -5e-3 * dx;
     float yrad = -5e-3 * dy;
 
-    // vertical rotation
-    glm::vec3 w = glm::normalize(glm::vec3(loc.x, loc.y, loc.z));
-    glm::vec3 v = glm::normalize(glm::vec3(up.x, up.y, up.z));
-    glm::vec3 u = glm::cross(v, w);
-    glm::mat4 R_v = rotate(glm::vec3(u.x, u.y, u.z), yrad);
+    // GLUT_LEFT_BUTTON = 0
+    // GLUT_RIGHT_BUTTON = 2
+    if (mb == 0) 
+    {
+        // vertical rotation
+        glm::vec3 w = glm::normalize(glm::vec3(loc.x, loc.y, loc.z));
+        glm::vec3 v = glm::normalize(glm::vec3(up.x, up.y, up.z));
+        glm::vec3 u = glm::cross(v, w);
+        glm::mat4 R_v = rotate(glm::vec3(u.x, u.y, u.z), yrad);
 
-    // horizontal rotation
-    glm::mat4 R_h = rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
+        // horizontal rotation
+        glm::mat4 R_h = rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
 
-    // compose two rotations and rotate location and up vectors
-    glm::mat4 R = R_h*R_v;
-    loc = R*loc;
-    up = R*up;
+        // compose two rotations and rotate location and up vectors
+        glm::mat4 R = R_h*R_v;
+        loc = R*loc;
+        up = R*up;
+    }
+    else if (mb == 2)
+    {
+        // amount of scaling is relative to distance from stored point
+        // zoom in if mouse moved upwards, zoom out if mouse moved downwards
+        float zoomfactor = 0.005*sqrt(pow(dx, 2) + pow(dy, 2));
+
+        if (dy > 0)
+        {
+            loc *= (1-zoomfactor);
+        }
+        if (dy < 0)
+        {
+            loc *= (1+zoomfactor);
+        }
+    }
 
     update();
 }
@@ -89,7 +110,7 @@ void Camera::rot_fps(int x, int y)
     glm::mat4 R = R_h*R_v;
     dir = R*dir;
     up = R*up;
-
+    
     update();
 }
 
@@ -120,10 +141,11 @@ void Camera::update()
     }
 }
 
-void Camera::storeMouseLoc(int x, int y)
+void Camera::storeMouseLoc(int x, int y, int button)
 {
     this->oldMouseX = x;
     this->oldMouseY = y;
+    this->mb = button;
 }
 
 void Camera::storeScreenSize(int w, int h)
@@ -206,4 +228,9 @@ void Camera::changeSpeed(float amount)
         speed = 0.1;
     }
     cout << "Camera speed changed to " << speed << endl;
+}
+
+int Camera::getMouseButton()
+{
+    return mb;
 }

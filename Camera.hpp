@@ -21,6 +21,7 @@ class Camera
         int oldMouseY;
         int screenWidth;
         int screenHeight;
+        int mb;             // keeps track of which mouse button is pressed
         float far;
         float near;
         float mode;
@@ -41,7 +42,7 @@ class Camera
         void rot_mouse(int x, int y);
         void rot_fps(int x, int y);
         void update();
-        void storeMouseLoc(int x, int y);
+        void storeMouseLoc(int x, int y, int button);
         void storeScreenSize(int w, int h);
         void toggleMode();
         int getMode();
@@ -49,5 +50,6 @@ class Camera
         void mov_upward(float amount);
         void mov_sideways(float amount);
         void changeSpeed(float amount);
+        int getMouseButton();
 };
 #endif
