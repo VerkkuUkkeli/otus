@@ -12,6 +12,7 @@
 #endif
 
 #include "helpers.hpp"
+#include "Transform.hpp"
 #include <glm/glm.hpp>
 
 class Camera
@@ -37,8 +38,6 @@ class Camera
 
         // functions
         Camera();
-        void rot_h(float rad);
-        void rot_v(float rad);
         void rot_mouse(int x, int y);
         void rot_fps(int x, int y);
         void update();

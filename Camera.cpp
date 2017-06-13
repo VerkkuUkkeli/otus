@@ -15,31 +15,6 @@ Camera::Camera()
     mb      = -1;
 }
 
-void Camera::rot_h(float rad)
-{
-    // rotate location and up vector about +Z axis by rad
-    glm::mat4 R = rotate(glm::vec3(0.0, 0.0, 1.0), rad);
-    loc = R*loc;
-    up = R*up;
-
-    update();
-}
-
-void Camera::rot_v(float rad)
-{
-    // compute vector orthogonal to loc and up
-    glm::vec3 w = glm::normalize(glm::vec3(loc.x, loc.y, loc.z));
-    glm::vec3 v = glm::normalize(glm::vec3(up.x, up.y, up.z));
-    glm::vec3 u = glm::cross(v, w);
-
-    // rotate location and up about the new vector
-    glm::mat4 R = rotate(glm::vec3(u.x, u.y, u.z), rad);
-    loc = R*loc;
-    up = R*up;
-
-    update();
-}
-
 void Camera::rot_mouse(int x, int y)
 {
     // update FPS mode direction vector to prevent 'jumping'
@@ -62,10 +37,10 @@ void Camera::rot_mouse(int x, int y)
         glm::vec3 w = glm::normalize(glm::vec3(loc-focus));
         glm::vec3 v = glm::normalize(glm::vec3(up));
         glm::vec3 u = glm::cross(v, w);
-        glm::mat4 R_v = rotate(u, yrad);
+        glm::mat4 R_v = Transform::rotate(u, yrad);
 
         // horizontal rotation
-        glm::mat4 R_h = rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
+        glm::mat4 R_h = Transform::rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
 
         // compose two rotations and rotate location and up vectors
         glm::mat4 R = R_h*R_v;
@@ -117,10 +92,10 @@ void Camera::rot_fps(int x, int y)
     glm::vec3 w = glm::normalize(glm::vec3(dir.x, dir.y, dir.z));
     glm::vec3 v = glm::normalize(glm::vec3(up.x, up.y, up.z));
     glm::vec3 u = glm::cross(v, w);
-    glm::mat4 R_v = rotate(glm::vec3(u.x, u.y, u.z), yrad);
+    glm::mat4 R_v = Transform::rotate(glm::vec3(u.x, u.y, u.z), yrad);
 
     // horizontal rotation
-    glm::mat4 R_h = rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
+    glm::mat4 R_h = Transform::rotate(glm::vec3(0.0, 0.0, 1.0), xrad);
 
     glm::mat4 R = R_h*R_v;
     dir = R*dir;

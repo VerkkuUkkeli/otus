@@ -59,21 +59,7 @@ void SpecialInput(int key, int x, int y)
 {
     if (cam.getMode() == cam.CAM_ORBIT)
     {
-        switch (key)
-        {
-            case GLUT_KEY_LEFT:
-                cam.rot_h(-0.1);
-                break;
-            case GLUT_KEY_RIGHT:
-                cam.rot_h(0.1);
-                break;
-            case GLUT_KEY_UP:
-                cam.rot_v(-0.1);
-                break;
-            case GLUT_KEY_DOWN:
-                cam.rot_v(0.1);
-                break;
-        }
+        // TODO: Add keyboard controls
     }
     glutPostRedisplay();
 }

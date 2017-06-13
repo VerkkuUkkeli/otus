@@ -3,24 +3,7 @@
 
 using namespace std;
 
-glm::mat4 rotate (glm::vec3 axis, float rad)
-{
-    // normalise axis
-    axis = glm::normalize(axis);
 
-    // declare relevant matrices
-    glm::mat3 I = glm::mat3(1.0);
-    glm::mat3 A_dual = glm::mat3(0, axis.z, -axis.y, -axis.z, 0, axis.x, axis.y, -axis.x, 0);
-
-    glm::mat3 R3 = I*cosf(rad) + glm::outerProduct(axis, axis)*(1-cosf(rad)) + A_dual*sinf(rad);
-    glm::mat4 R4 = glm::mat4(
-            R3[0].x, R3[0].y, R3[0].z, 0.0,
-            R3[1].x, R3[1].y, R3[1].z, 0.0,
-            R3[2].x, R3[2].y, R3[2].z, 0.0,
-            0.0, 0.0, 0.0, 1.0);
-
-    return R4;
-}
 
 void printMatrix(glm::mat4 M)
 {
@@ -33,6 +16,7 @@ void printMatrix(glm::mat4 M)
         << M[2].z << setw(8) << M[2].w << "]" << endl;
     cout << "[" << setw(8) << M[3].x << setw(8) << M[3].y << setw(8)
         << M[3].z << setw(8) << M[3].w << "]" << endl;
+    cout << endl;
 }
 
 void printMatrix(glm::mat3 M)
@@ -44,6 +28,7 @@ void printMatrix(glm::mat3 M)
         << M[1].z << "]" << endl;
     cout << "[" << setw(8) << M[2].x << setw(8) << M[2].y << setw(8)
         << M[2].z << "]" << endl;
+    cout << endl;
 }
 
 void printMatrix(glm::mat2 M)
@@ -51,11 +36,12 @@ void printMatrix(glm::mat2 M)
     cout.precision(2);
     cout << "[" << setw(8) << M[0].x << setw(8) << M[0].y << "]" << endl;
     cout << "[" << setw(8) << M[1].x << setw(8) << M[1].y << "]" << endl;
+    cout << endl;
 }
 
 void help()
 {
-    cout << "\nWelcome to otus™ Visualisation Centre.\n\n";
+    cout << "\nWelcome to Otus Visualisation Centre.\n\n";
     cout << setw(24) << "CONTROLS" << "\n";
 
     cout << "General:" << endl;
