@@ -230,3 +230,21 @@ int Camera::getMouseButton()
 {
     return mb;
 }
+
+glm::mat4 Camera::getModelview()
+{
+    if (mode == CAM_ORBIT)
+    {
+        return glm::lookAt(vec3(loc), vec3(focus), vec3(up));
+    }
+    else if (mode == CAM_FPS)
+    {
+        return glm::lookAt(vec3(loc), vec3(focus+dir), vec3(up));
+    }
+}
+
+glm::mat4 Camera::getProjection()
+{
+    float rad = 60.0*M_PI/180;
+    gluPerspective(rad, (float)screenWidth/(float)screenHeight, near, far);
+}

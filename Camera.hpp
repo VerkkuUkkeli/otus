@@ -14,6 +14,7 @@
 #include "helpers.hpp"
 #include "Transform.hpp"
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Camera
 {
@@ -50,5 +51,7 @@ class Camera
         void mov_sideways(float amount);
         void changeSpeed(float amount);
         int getMouseButton();
+        glm::mat4 getModelview();
+        glm::mat4 getProjection();
 };
 #endif

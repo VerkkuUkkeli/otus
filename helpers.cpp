@@ -39,6 +39,14 @@ void printMatrix(glm::mat2 M)
     cout << endl;
 }
 
+glm::mat3 dual(glm::vec3 v)
+{
+    return glm::mat3(
+            0,     v.z, -v.y,
+            -v.z,  0,    v.x,
+            v.y,  -v.x,  0);
+}
+
 void help()
 {
     cout << "\nWelcome to Otus Visualisation Centre.\n\n";

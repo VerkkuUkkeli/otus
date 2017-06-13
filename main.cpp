@@ -32,11 +32,13 @@ int main(int argc, char* argv[])
 
     glutInitWindowPosition(1920/8, 1080/8);
     glutInitWindowSize(1920/2, 1080/2);
-    glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);
+    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
     glutCreateWindow("Otus");
 
     glewInit();
     glClearColor(0.259, 0.525, 0.957, 1.0);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
     help();
 
     // callback functions
@@ -47,6 +49,7 @@ int main(int argc, char* argv[])
     glutMotionFunc(motion);
     glutPassiveMotionFunc(passiveMotion);
     glutReshapeFunc(reshape);
+    glutIdleFunc(display);
 
     glutMainLoop();
     return 0;

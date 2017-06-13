@@ -14,8 +14,12 @@
 #include <GL/glut.h>
 #include <glm/glm.hpp>
 #include "globals.hpp"
+#include "RigidBody.hpp"
+#include <iostream>
 
 void drawCursor(glm::vec4 focus);
+void drawGround(float r);
+void drawAxes();
 void display();
 
 #endif

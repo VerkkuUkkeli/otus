@@ -1,5 +1,7 @@
 #include "display.hpp"
 
+using namespace std;
+
 void drawCursor(glm::vec4 focus)
 {
     float x = focus.x;
@@ -61,46 +63,45 @@ void drawCursor(glm::vec4 focus)
 // callback for displaying to the screen
 void display()
 {
-    // clear screen before drawing
-    glClear(GL_COLOR_BUFFER_BIT);
+    static RigidBody body = RigidBody();
 
-    // radius of xy ground plane
-    float r = 30.0;
-
-    // ground plane
-    glBegin(GL_POLYGON);
-        glColor3f(0.5, 0.5, 0.5);
-        glVertex3f(r, r, 0.0);
-        glColor3f(0.5, 0.5, 0.5);
-        glVertex3f(r, -r, 0.0);
-        glColor3f(0.5, 0.5, 0.5);
-        glVertex3f(-r, -r, 0.0);
-        glColor3f(0.5, 0.5, 0.5);
-        glVertex3f(-r, r, 0.0);
-    glEnd();
-
-    // ground grid
-    for (float i = -r; i <= r; i+=1.0)
+    // moderate framerate and keep track of dt
+    static float lastTime = 0.0f;
+    float dt = glutGet(GLUT_ELAPSED_TIME) - lastTime;
+    float framerate = 60.0f;
+    if (dt < 1000/(framerate))
     {
-        // vertical
-        glBegin(GL_LINES);
-            glColor3f(0.0, 0.0, 0.0);
-            glVertex3f(i, -r, 0);
-            glColor3f(0.0, 0.0, 0.0);
-            glVertex3f(i, r, 0);
-        glEnd();
-
-        // horizontal 
-        glBegin(GL_LINES);
-            glColor3f(0.0, 0.0, 0.0);
-            glVertex3f(-r, i, 0);
-            glColor3f(0.0, 0.0, 0.0);
-            glVertex3f(r, i, 0);
-        glEnd();
-
+        return;
     }
+    lastTime = glutGet(GLUT_ELAPSED_TIME);
 
+    // RigidBody assumes that time is in seconds
+    body.sim_step(dt/1000.0f);
+    State s = body.getState();
+    //cout << s.x.x << " " << s.x.y << " " << s.x.z << endl;
+
+    // clear screen before drawing
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    drawGround(30.0);
+    drawAxes();
+
+    mat4 mv = cam.getModelview()*body.getTransformation();
+    glPushMatrix();
+    glLoadMatrixf(&mv[0][0]);
+    glutSolidCube(1.0f);
+    glPopMatrix();
+
+    drawCursor(cam.focus);
+
+    // swap buffers to display image
+    glutSwapBuffers();
+}
+
+void drawAxes()
+{
     // coordinate axes
+    glDisable(GL_DEPTH_TEST);
     glBegin(GL_LINES); // X
         glColor3f(1.0, 0.0, 0.0);
         glVertex3f(0.0, 0.0, 0.0);
@@ -121,8 +122,42 @@ void display()
         glColor3f(0.0, 0.0, 1.0);
         glVertex3f(0.0, 0.0, 1.0);
     glEnd();
+    glEnable(GL_DEPTH_TEST);
+}
 
-    drawCursor(cam.focus);
+void drawGround(float r)
+{
+    // ground plane
+    glBegin(GL_POLYGON);
+        glColor4f(0.5, 0.5, 0.5, 0.5);
+        glVertex3f(r, r, 0.0);
+        glColor4f(0.5, 0.5, 0.5, 0.5);
+        glVertex3f(r, -r, 0.0);
+        glColor4f(0.5, 0.5, 0.5, 0.5);
+        glVertex3f(-r, -r, 0.0);
+        glColor4f(0.5, 0.5, 0.5, 0.5);
+        glVertex3f(-r, r, 0.0);
+    glEnd();
 
-    glFlush();
+    // ground grid
+    glDisable(GL_DEPTH_TEST);
+    for (float i = -r; i <= r; i+=1.0)
+    {
+        // vertical
+        glBegin(GL_LINES);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(i, -r, 0);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(i, r, 0);
+        glEnd();
+
+        // horizontal 
+        glBegin(GL_LINES);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(-r, i, 0);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(r, i, 0);
+        glEnd();
+    }
+    glEnable(GL_DEPTH_TEST);
 }
