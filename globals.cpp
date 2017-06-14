@@ -1,4 +1,5 @@
 #include "globals.hpp"
-#include "Camera.hpp"
 
 Camera cam = Camera();
+RigidBody body = RigidBody();
+GLuint shaderprogram = 0;

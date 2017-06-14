@@ -63,8 +63,6 @@ void drawCursor(glm::vec4 focus)
 // callback for displaying to the screen
 void display()
 {
-    static RigidBody body = RigidBody();
-
     // moderate framerate and keep track of dt
     static float lastTime = 0.0f;
     float dt = glutGet(GLUT_ELAPSED_TIME) - lastTime;
@@ -89,7 +87,7 @@ void display()
     mat4 mv = cam.getModelview()*body.getTransformation();
     glPushMatrix();
     glLoadMatrixf(&mv[0][0]);
-    glutSolidCube(1.0f);
+    glutSolidTeapot(1.0);
     glPopMatrix();
 
     drawCursor(cam.focus);
@@ -132,11 +130,11 @@ void drawGround(float r)
         glColor4f(0.5, 0.5, 0.5, 0.5);
         glVertex3f(r, r, 0.0);
         glColor4f(0.5, 0.5, 0.5, 0.5);
-        glVertex3f(r, -r, 0.0);
+        glVertex3f(-r, r, 0.0);
         glColor4f(0.5, 0.5, 0.5, 0.5);
         glVertex3f(-r, -r, 0.0);
         glColor4f(0.5, 0.5, 0.5, 0.5);
-        glVertex3f(-r, r, 0.0);
+        glVertex3f(r, -r, 0.0);
     glEnd();
 
     // ground grid

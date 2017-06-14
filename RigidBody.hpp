@@ -43,6 +43,7 @@ class RigidBody
 
     public:
         RigidBody();
+        void reset();                // reset to original state
         void sim_step(float dt);    // simulate one step forward
         mat3 dRdt(float t, mat3 R);
         vec3 dxdt(float t, vec3 M);

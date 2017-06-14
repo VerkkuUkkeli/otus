@@ -20,6 +20,7 @@
 #include "ODE.hpp"
 #include "display.hpp"
 #include "callbacks.hpp"
+#include "shader.hpp"
 
 #include "globals.hpp"
 
@@ -39,6 +40,10 @@ int main(int argc, char* argv[])
     glClearColor(0.259, 0.525, 0.957, 1.0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+
+    GLuint vertexshader = compileShader(GL_VERTEX_SHADER, "shaders/vert.glsl");
+    GLuint fragmentshader = compileShader(GL_FRAGMENT_SHADER, "shaders/frag.glsl");
+    shaderprogram = initProgram(vertexshader, fragmentshader);
     help();
 
     // callback functions

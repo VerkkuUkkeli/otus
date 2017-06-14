@@ -1,4 +1,7 @@
 #include "RigidBody.hpp"
+#include <iostream>
+
+using namespace std;
 
 RigidBody::RigidBody()
 {
@@ -9,14 +12,37 @@ RigidBody::RigidBody()
     x = vec3(0.0f, 0.0f, 2.0f);
     R = mat3(1.0f);
     P = vec3(0.0f);
-    L = vec3(0.0f, 0.0f, 0.1f);
+    L = vec3(0.0f, 0.0f, 0.0f);
 
     Iinv = R*Ibodyinv*transpose(R);
     v = P/mass;
     omega = Iinv * L;
 
     force = vec3(0.0f, 0.0f, 0.0f);
-    torque = vec3(0.0f);
+    torque = vec3(0.0, 0.0, 0.0);
+
+    size = 0.5f;
+}
+
+// TODO: Add initial variables so that reset values are not hardcoded.
+void RigidBody::reset()
+{
+    cout << "Body reset!" << endl;
+    mass = 1.0;
+    Ibody = (mass/12.0f)*mat3(1.0f);
+    Ibodyinv = inverse(Ibody);
+
+    x = vec3(0.0f, 0.0f, 2.0f);
+    R = mat3(1.0f);
+    P = vec3(0.0f);
+    L = vec3(0.0f, 0.0f, 0.0f);
+
+    Iinv = R*Ibodyinv*transpose(R);
+    v = P/mass;
+    omega = Iinv * L;
+
+    force = vec3(0.0f, 0.0f, 0.0f);
+    torque = vec3(0.0, 0.0, 0.0);
 
     size = 0.5f;
 }
@@ -25,6 +51,7 @@ RigidBody::RigidBody()
 // the time step in the argument in in simulation time
 void RigidBody::sim_step(float dt)
 {
+    Iinv = R*Ibodyinv*transpose(R);
     v = P/mass;
     omega = Iinv * L;
 
@@ -70,7 +97,7 @@ State RigidBody::getState()
 
 mat4 RigidBody::getTransformation()
 {
-    mat4 S = Transform::scale(size, size, size/2.0f);
+    mat4 S = Transform::scale(size, size, size);
     mat4 T = Transform::translate(x);
     mat4 Rot = Transform::rotate(R);
     return T*Rot*S;

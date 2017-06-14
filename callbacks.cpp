@@ -17,6 +17,9 @@ void keyboard(unsigned char key, int x, int y)
             // button set to -1 to not cause any Orbit mode rotations
             cam.storeMouseLoc(x, y, -1);
             break;
+        case 'r':
+            body.reset();
+            break;
         default:
             break;
     }
@@ -60,6 +63,15 @@ void SpecialInput(int key, int x, int y)
     if (cam.getMode() == cam.CAM_ORBIT)
     {
         // TODO: Add keyboard controls
+        switch (key)
+        {
+            case (GLUT_KEY_RIGHT):
+                //body.torque += vec3(0.0, 0.0, 1.0);
+                break;
+            case (GLUT_KEY_LEFT):
+                //body.torque += vec3(0.0, 0.0, -1.0);
+                break;
+        }
     }
     glutPostRedisplay();
 }
