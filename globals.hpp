@@ -4,6 +4,8 @@
 
 #include "Camera.hpp"
 #include "RigidBody.hpp"
+#include "Particle.hpp"
+#include <vector>
 
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -26,3 +28,6 @@ extern RigidBody body;
 
 // display needs to access to shaderprogram which is initialised in main
 extern GLuint shaderprogram;
+
+// display needs access to particles initialised in main
+extern vector<Particle*> particles;

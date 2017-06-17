@@ -1,7 +1,9 @@
 #include <glm/glm.hpp>
 #include <math.h>
+#include <time.h>
 #include <iomanip>
 
+float randf(float max);
 void rot_h(float rad);
 void rot_v(float rad);
 void printMatrix(glm::mat4 M);

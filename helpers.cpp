@@ -3,7 +3,11 @@
 
 using namespace std;
 
-
+// returns float in the range [0, max]
+float randf(float max)
+{
+    return (((float) rand()) / (float) RAND_MAX)*max;
+}
 
 void printMatrix(glm::mat4 M)
 {

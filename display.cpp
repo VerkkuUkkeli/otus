@@ -60,6 +60,19 @@ void drawCursor(glm::vec4 focus)
     glEnd();
 }
 
+// compute force on p1 by p2
+glm::vec3 computeGravity(Particle* p1, Particle* p2)
+{
+    float gconst = 1e-6;
+
+    // displacement
+    glm::vec3 disp = p2->s - p1->s;
+    float r = disp.length();
+
+    glm::vec3 F = (float)((gconst*p1->m*p2->m)/pow(r, 2))*glm::normalize(disp);
+    return F;
+}
+
 // callback for displaying to the screen
 void display()
 {
@@ -73,13 +86,31 @@ void display()
     }
     lastTime = glutGet(GLUT_ELAPSED_TIME);
 
-    // RigidBody assumes that time is in seconds
+        // RigidBody assumes that time is in seconds
     body.sim_step(dt/1000.0f);
     State s = body.getState();
     //cout << s.x.x << " " << s.x.y << " " << s.x.z << endl;
 
     // clear screen before drawing
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // simulate particles by brute force
+    /*
+    for (int i = 0; i < particles.size(); i++)
+    {
+        Particle* current = particles[i];
+        glm::vec3 F = glm::vec3(0.0f);
+        for (int j = 0; j < particles.size(); j++)
+        {
+            if (i != j)
+            {
+                F += computeGravity(current, particles[j]);
+            }
+        }
+        current->calculate(F, dt);
+        current->draw(cam.getModelview());
+    }
+    */
 
     drawGround(30.0);
     drawAxes();

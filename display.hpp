@@ -22,4 +22,6 @@ void drawGround(float r);
 void drawAxes();
 void display();
 
+glm::vec3 computeGravity(Particle* p1, Particle* p2);
+
 #endif
